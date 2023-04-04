@@ -1,0 +1,101 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+setwd("C:/Users/ben/Downloads/")
+```
+
+
+```{r}
+library(dplyr)
+library(tidyverse)
+```
+
+
+
+```{r}
+
+data <- read.csv("Businesses.csv")
+str(data)
+```
+
+
+```{r}
+select_data <- select(data, revenue, sales, primary_sector, costs, country_of_primary_operation)
+
+# Sort the data by sales
+
+select_data <- arrange(data, desc(sales))
+
+head(select_data)
+```
+
+
+<!-- Hypothesis 1 -->
+<!-- Higher investment on digital marketing by SMEs leads to higher ROI/revenue -->
+
+```{r}
+library(ggplot2)
+
+ggplot(select_data, aes(x= costs, y=revenue)) + 
+  geom_point() + 
+  geom_smooth(method=lm) +
+  labs(x="Costs", y="Revenue")+
+  ggtitle("Investment on Digital Marketing & Revenue")
+
+```
+
+
+# This plot shows that there is a positive correlation between costs and revenue. 
+# This suggests that higher investment on digital marketing does lead to higher ROI/revenue for SMEs.
+
+
+
+<!-- Hypothesis 2 -->
+<!-- Higher investment on digital marketing leads to higher(online) sales by SMEs. -->
+```{r}
+library(ggplot2)
+
+ggplot(select_data, aes(x= costs, y=sales)) + 
+  geom_point() + 
+  geom_smooth(method=lm) +
+  labs(x="Costs", y="Sales")+
+  ggtitle("Investment on Digital Marketing & Sales")
+  
+```
+
+
+
+# This plot shows that there is a positive correlation between costs and sales. 
+# This suggests that higher investment on digital marketing does lead to higher (online) sales for SMEs.
+
+# Linear Regression on sales
+```{r}
+library(ggplot2)
+
+mod <- lm(sales~costs, data=select_data)
+
+summary(mod)
+
+```
+
+
+<!-- The model results suggest that there is a positive correlation between costs and sales. The coefficient (2.585e-02) of the costs is statistically significant, as indicated by the p-value (<2e-16). This means that there is a statistically significant relationship between costs and sales. The adjusted R-squared value of 0.2409 indicates that 24.09% of the variation in sales can be explained by costs. The F-statistic of 309.8 and p-value of <2.2e-16 indicate that the model is statistically significant. -->
+
+# Linear Regression on revenue
+```{r}
+library(ggplot2)
+
+mod <- lm(revenue~costs, data=select_data)
+
+summary(mod)
+```
+
+
+
+<!-- The linear model used to predict sales from costs has a relatively high R-squared value (0.7046), which indicates that the model fits the data well. The intercept coefficient estimate is 124600, which indicates that the average sales are 124600 when the costs are 0. The slope coefficient, which is the estimated effect of costs on sales, is 0.796. This means that for every additional unit of cost, the sales increase by an average of 0.796 units. The p-value for the slope coefficient is less than 0.001, which indicates that the coefficient is statistically significant. This suggests that increasing investments in digital marketing does lead to higher sales for SMEs. -->
+
+
